@@ -1,5 +1,5 @@
 // index.js
-
+const variable= require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 
@@ -54,5 +54,5 @@ app.use('/api-explorer', apiReference({
 // Server
 app.listen(PORT, () => {
   console.log(`The server is running on http://localhost:${PORT}`);
-  console.log(`Scalar UI: http://localhost:${PORT}/api-explorer`);
+  // console.log(`Scalar UI: http://localhost:${PORT}/api-explorer`);
 });

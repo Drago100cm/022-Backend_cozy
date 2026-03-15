@@ -121,8 +121,8 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log("Roles del usuario:", JSON.stringify(rolesArray, null, 2));
-    console.log("Permisos calculados:", permisosUsuario);
+    // console.log("Roles del usuario:", JSON.stringify(rolesArray, null, 2));
+    // console.log("Permisos calculados:", permisosUsuario);
     return res.status(200).json({
       status: "success",
       message: "Inicio de sesión exitoso",
