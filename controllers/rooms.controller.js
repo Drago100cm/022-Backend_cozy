@@ -3,23 +3,19 @@ const RoomDb = require('../models/room.model');
 //Guardar un nuevo registro
 const guardar = async (req, res) => {
     try {
-        const { titulo, descripcion, precio, imagen, status, propietario } = req.body;
+        const {  titulo, descripcion, precio, imagen, status, direccion, colonia,referencias,
+            capacidad, servicios, incluyeServicios, amueblado, tipoRenta, publicado,  } = req.body;
 
         // Validar que todos los campos obligatorios estén presentes
-        if (!titulo || !descripcion || !precio || !imagen || !status || !propietario) {
+        if (  !titulo ||!descripcion ||!precio || !imagen ||!status ||!direccion ||!colonia ||!capacidad) {
             return res.status(400).json({
                 status: "error",
                 message: "Faltan campos obligatorios",
             });
         }
 
-        const nuevoRoom = new RoomDb({
-            titulo,
-            descripcion,
-            precio,
-            imagen,
-            status,
-            propietario
+        const nuevoRoom = new RoomDb({titulo,descripcion, precio, imagen, status,propietario: req.body.propietario,
+        direccion, colonia, referencias,capacidad,servicios,incluyeServicios, amueblado, tipoRenta, publicado
         });
 
         const RoomGuardado = await nuevoRoom.save();
@@ -116,12 +112,14 @@ const eliminar = async (req, res) => {
 
 const actualizar = async (req, res) => {
     try {
-        const id = req.params.id;   
-        const { titulo, descripcion, precio, imagen, status, propietario } = req.body;
+        const id = req.params.id;
+        const {titulo,descripcion,precio,imagen,status,propietario,direccion,colonia,referencias,capacidad,servicios,incluyeServicios,  
+        amueblado,tipoRenta
+        } = req.body;
 
         if (!titulo && !descripcion && !precio && !imagen && !status && !propietario) {
             return res.status(400).json(
-                {  
+                { 
                     status: "error",
                     message: "Debe de proporcionar al menos un campo para actualizar",   
                 }
@@ -135,7 +133,15 @@ const actualizar = async (req, res) => {
         if (imagen) datosactualizar.imagen = imagen;
         if (status) datosactualizar.status = status;
         if (propietario) datosactualizar.propietario = propietario;
-
+        if (direccion) datosactualizar.direccion = direccion;
+        if (direccion !== undefined) datosactualizar.direccion = direccion;
+        if (colonia !== undefined) datosactualizar.colonia = colonia;
+        if (referencias !== undefined) datosactualizar.referencias = referencias;
+        if (capacidad !== undefined) datosactualizar.capacidad = capacidad;
+        if (servicios !== undefined) datosactualizar.servicios = servicios;
+        if (incluyeServicios !== undefined) datosactualizar.incluyeServicios = incluyeServicios;
+        if (amueblado !== undefined) datosactualizar.amueblado = amueblado;
+        if (tipoRenta !== undefined) datosactualizar.tipoRenta = tipoRenta;
         // Buscar y actualizar el registro
         const RoomActualizado = await RoomDb.findByIdAndUpdate(id, datosactualizar, {
             new: true,         // Devuelve el objeto actualizado
@@ -153,7 +159,7 @@ const actualizar = async (req, res) => {
 
         // Enviar una respuesta
         return res.status(200).json(
-            {  
+            {
                 status: "success",
                 message: "Cuarto actualizado en la bd",
                 data: RoomActualizado

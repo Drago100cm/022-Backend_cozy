@@ -14,14 +14,14 @@ const RoomSchema = new Schema({
     // Información del cuarto
     capacidad: {type: Number,required: true,min: 1},
     // Servicios
-    servicios: [{type: String,enum: ["agua", "luz", "internet", "gas", "amueblado"]}],
+    servicios: [{type: String,enum: ["agua", "luz", "internet", "gas"]}],
     incluyeServicios: {type: Boolean,default: false},
     //  Extras importantes
     amueblado: {type: Boolean,default: false},
     //  Tipo de renta (más realista para tu zona)
     tipoRenta: {type: String,enum: ["mensual", "semanal"],default: "mensual"},
     //  Múltiples imágenes (mejor que una sola)
-    imagenes: [{type: String}],
+    imagen: [{type: String}],
     publicado: {type: Boolean,default: true}
 });
 
