@@ -7,9 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret_local";
 // Registrar un nuevo usuario
 const registrar = async (req, res) => {
     try {
-        const { nombre, usuario, password, rol, roles } = req.body;
+        const { nombre, usuario, password, rol, roles, type_user } = req.body;
 
-        // Verificar compos obligatorios
+        // Verificar campos obligatorios
         if (!nombre || !usuario || !password) {
             return res.status(400).json({
                 status: "error",
@@ -28,6 +28,13 @@ const registrar = async (req, res) => {
 
         const rolDefecto = await getOrCreateUserRole();
 
+        // 🔹 Obtener roles reales
+        const rolUser = await RolDB.findOne({ nombre: "USER" });
+        const rolAdmin = await RolDB.findOne({ nombre: "ADMIN" });
+
+        // 🔹 Elegir rol según type_user
+        const rolSeleccionado = type_user === true ? rolUser : rolAdmin;
+
         // Encriptar la contraseña
         const salt = bcrypt.genSaltSync(10);
         const passwordEncriptada = bcrypt.hashSync(password, salt);
@@ -36,8 +43,7 @@ const registrar = async (req, res) => {
             nombre,
             usuario,
             password: passwordEncriptada,
-            rol,
-            roles:[rolDefecto._id]
+            roles: [rolSeleccionado._id] // 🔹 aquí el cambio
         });
 
         const usuarioGuardado = await nuevoUsuario.save();
@@ -56,7 +62,58 @@ const registrar = async (req, res) => {
             error: error.message
         });
     }
-}
+};
+// const registrar = async (req, res) => {
+//     try {
+//         const { nombre, usuario, password, rol, roles,type_User } = req.body;
+
+//         if (!nombre || !usuario || !password) {
+//             return res.status(400).json({
+//                 status: "error",
+//                 message: "Faltan campos obligatorios"
+//             });
+//         }
+
+//         const existe = await UsuarioDB.findOne({ usuario }).lean();
+//         if (existe) {
+//             return res.status(400).json({
+//                 status: "error",
+//                 message: "El nombre de usuario ya está en uso"
+//             });
+//         }
+
+//         const rolDefecto = await getOrCreateUserRole();
+//         const rolUser = await RolDB.findOne({ nombre: "USER" });
+//         const rolAdmin = await RolDB.findOne({ nombre: "ADMIN" });
+
+//         const salt = bcrypt.genSaltSync(10);
+//         const passwordEncriptada = bcrypt.hashSync(password, salt);
+
+//         const nuevoUsuario = new UsuarioDB({
+//             nombre,
+//             usuario,
+//             password: passwordEncriptada,
+//             rol,
+//             roles:[rolDefecto._id]
+//         });
+
+//         const usuarioGuardado = await nuevoUsuario.save();
+
+//         return res.status(201).json({
+//             status: "success",
+//             message: "Usuario registrado exitosamente",
+//             data: usuarioGuardado
+//         });
+
+//     } catch (error) {
+//         console.log("Error al registrar usuario: ", error);
+//         return res.status(500).json({
+//             status: "error",
+//             message: "Error en el servidor",
+//             error: error.message
+//         });
+//     }
+// }
 
 
 const login = async (req, res) => {

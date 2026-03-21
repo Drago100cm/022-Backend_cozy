@@ -50,7 +50,6 @@ const UsuarioSchema = new Schema(
         ref: "Room",
       },
     ],
-
     favoritos: [
       {
         type: Schema.Types.ObjectId,
@@ -60,6 +59,10 @@ const UsuarioSchema = new Schema(
 
     // 🔐 Seguridad y control
     verificado: {
+      type: Boolean,
+      default: true,
+    },
+    type_User: {
       type: Boolean,
       default: true,
     },
