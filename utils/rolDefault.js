@@ -4,7 +4,7 @@ const PermisoDB = require("../models/permisos.model");
 const { ensureDefaultPermisos } = require("./permsDefault");
 
 async function getOrCreateUserRole() {
-  let rol = await RolDB.findOne({ nombre: "ADMIN" });
+  let rol = await RolDB.findOne({ nombre: "USUARIO" });
   if (rol) return rol;
 
   console.log("⚠️ Rol ADMIN no existe, creando automáticamente...");
