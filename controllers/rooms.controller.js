@@ -3,18 +3,32 @@ const RoomDb = require('../models/room.model');
 //Guardar un nuevo registro
 const guardar = async (req, res) => {
     try {
-        const {  titulo, descripcion, precio, imagen, status, direccion, colonia,referencias,
-            capacidad, servicios, incluyeServicios, amueblado, tipoRenta, publicado,  } = req.body;
+        const { 
+             titulo,
+             descripcion,
+             precio,
+             imagen,
+             status,
+             direccion,
+             colonia,
+             referencias,
+             capacidad,
+             servicios,
+             incluyeServicios,
+             amueblado,
+             tipoRenta,
+             publicado,
+            } = req.body;
 
         // Validar que todos los campos obligatorios estén presentes
-        if (  !titulo ||!descripcion ||!precio || !imagen ||!status ||!direccion ||!colonia ||!capacidad) {
+        if ( !titulo  ||!precio || !imagen) {
             return res.status(400).json({
                 status: "error",
-                message: "Faltan campos obligatorios",
+                message: "Faltan campos obligatorios fr",
             });
         }
 
-        const nuevoRoom = new RoomDb({titulo,descripcion, precio, imagen, status,propietario: req.body.propietario,
+        const nuevoRoom = new RoomDb({titulo,descripcion, precio, imagen, status,propietario: req.user.id,
         direccion, colonia, referencias,capacidad,servicios,incluyeServicios, amueblado, tipoRenta, publicado
         });
 
