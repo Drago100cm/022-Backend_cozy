@@ -9,11 +9,11 @@ const Rentachema = new Schema({
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
     cuarto: { type: Schema.Types.ObjectId, ref: 'Room', required: true },
     // 🔄 Estado más realista del proceso
-    status: {
-        type: String,
-        enum: ['pendiente', 'aceptada', 'rechazada', 'cancelada', 'finalizada'],
-        default: 'pendiente'
-    }
+    // status: {
+    //     type: String,
+    //     enum: ['pendiente', 'aceptada', 'rechazada', 'cancelada', 'finalizada'],
+    //     default: 'pendiente'
+    // }
 
 });
 

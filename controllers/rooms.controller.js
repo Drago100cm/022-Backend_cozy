@@ -28,7 +28,7 @@ const guardar = async (req, res) => {
             });
         }
 
-        const nuevoRoom = new RoomDb({titulo,descripcion, precio, imagen, status,propietario: req.user.id,
+        const nuevoRoom = new RoomDb({titulo,descripcion, precio, imagen, status,propietario: req.body.propietario,
         direccion, colonia, referencias,capacidad,servicios,incluyeServicios, amueblado, tipoRenta, publicado
         });
 
