@@ -1,18 +1,60 @@
-import { Router } from "express";
-import {
-    crearComentario,
-    eliminarComentario,
-    obtenerComentariosPorRoom,
-    obtenerTodos,
-    publicarComentario
-} from "../controllers/comment.controller.js";
+// routes/comment.routes.js
+const express = require('express');
+const router = express.Router();
+const CommentController = require('../controllers/comment.controller');
+const auth = require('../middleware/auth');
 
-const router = Router();
+/**
+ * @openapi
+ * tags:
+ *   - name: Comments
+ *     description: Operaciones con comentarios
+ */
 
-router.post("/", crearComentario);
-router.get("/room/:roomId", obtenerComentariosPorRoom);
-router.get("/", obtenerTodos);
-router.put("/publicar/:id", publicarComentario);
-router.delete("/:id", eliminarComentario);
+/**
+ * @openapi
+ * /api/comment/guardarRegistro:
+ *   post:
+ *     tags: [Comments]
+ *     summary: Crear un comentario
+ */
+router.post('/guardarRegistro', CommentController.guardar);
 
-export default router;
+/**
+ * @openapi
+ * /api/comment/listar:
+ *   get:
+ *     tags: [Comments]
+ *     summary: Listar comentarios
+ */
+router.get('/listar',CommentController.listarTodos);
+
+/**
+ * @openapi
+ * /api/comment/buscarid/{id}:
+ *   get:
+ *     tags: [Comments]
+ *     summary: Obtener comentario por ID
+ */
+router.get('/buscarid/:id',CommentController.BuscarId);
+
+/**
+ * @openapi
+ * /api/comment/eliminar/{id}:
+ *   delete:
+ *     tags: [Comments]
+ *     summary: Eliminar comentario
+ */
+router.delete('/eliminar/:id',CommentController.eliminar);
+
+/**
+ * @openapi
+ * /api/comment/actualizar/{id}:
+ *   patch:
+ *     tags: [Comments]
+ *     summary: Actualizar comentario
+ */
+router.patch('/actualizar/:id', CommentController.actualizar);
+router.get('/room/:roomId', CommentController.obtenerPorRoom);
+
+module.exports = router;

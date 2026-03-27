@@ -3,7 +3,7 @@ const RoomDb = require('../models/room.model');
 //Guardar un nuevo registro
 const guardar = async (req, res) => {
     try {
-        const { 
+        const {
              titulo,
              descripcion,
              precio,

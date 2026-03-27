@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema({
   roomId: {
@@ -11,6 +11,7 @@ const commentSchema = new mongoose.Schema({
     ref: "Usuario",
     required: true,
   },
+  //contenido
   texto: {
     type: String,
     required: true,
@@ -28,4 +29,4 @@ const commentSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-export default mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model("Comment", commentSchema);
