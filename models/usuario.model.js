@@ -62,9 +62,14 @@ const UsuarioSchema = new Schema(
       type: Boolean,
       default: true,
     },
+     //  si es true es usuario si es falso es administrador 
     type_User: {
       type: Boolean,
       default: true,
+    },
+    telefono: {
+      type: String,
+      default: ''
     },
 
     estado: {
