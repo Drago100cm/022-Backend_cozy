@@ -2,17 +2,17 @@ const RolDB = require("../models/role.model");
 const PermisoDB = require("../models/permisos.model");
 const { ensureDefaultPermisos } = require("./permsDefault");
 
-async function ensureDefaultRoles() {
+async function getOrCreateUserRole() {
   // 1) asegurar permisos
   await ensureDefaultPermisos();
 
-  // 2) verificar ADMIN
+  // ===================== ADMIN =====================
   let adminRole = await RolDB.findOne({ nombre: "ADMIN" });
 
   if (!adminRole) {
     console.log("⚠️ Creando rol ADMIN...");
 
-    const allPermisos = await PermisoDB.find(); // todos los permisos
+    const allPermisos = await PermisoDB.find();
 
     adminRole = new RolDB({
       nombre: "ADMIN",
@@ -25,7 +25,7 @@ async function ensureDefaultRoles() {
     console.log("✅ Rol ADMIN creado");
   }
 
-  // 3) verificar USER
+  // ===================== USER =====================
   let userRole = await RolDB.findOne({ nombre: "USER" });
 
   if (!userRole) {
@@ -53,7 +53,8 @@ async function ensureDefaultRoles() {
     await userRole.save();
     console.log("✅ Rol USER creado");
   }
-  // 4) verificar Arrendador (si se necesita)
+
+  // ===================== LESSOR =====================
   let lessorRole = await RolDB.findOne({ nombre: "LESSOR" });
 
   if (!lessorRole) {
@@ -63,33 +64,33 @@ async function ensureDefaultRoles() {
       nombre: {
         $in: [
           // ---- ROOM ----
-          'ROOM_LIST',
-          'ROOM_CREATE',
-          'ROOM_UPDATE',
-          'ROOM_DELETE',
+          "ROOM_LIST",
+          "ROOM_CREATE",
+          "ROOM_UPDATE",
+          "ROOM_DELETE",
           // ---- RENT ----
-          'RENT_LIST',
-          'RENT_CREATE',
-          'RENT_UPDATE',
-          'RENT_DELETE',
+          "RENT_LIST",
+          "RENT_CREATE",
+          "RENT_UPDATE",
+          "RENT_DELETE",
           // ---- USER ----
-          'USER_LIST',
+          "USER_LIST",
         ]
       }
     });
 
-    userRole = new RolDB({
-      nombre: "USER",
-      descripcion: "Rol con permisos básicos",
+    lessorRole = new RolDB({
+      nombre: "LESSOR", // ✅ corregido
+      descripcion: "Rol con permisos de arrendador",
       permisos: permisosBasicos.map(p => p._id),
       activo: true,
     });
 
-    await userRole.save();
-    console.log("✅ Rol USER creado");
+    await lessorRole.save();
+    console.log("✅ Rol LESSOR creado");
   }
 
-  return { adminRole, userRole };
+  return { adminRole, userRole, lessorRole }; // ✅ ahora sí retorna todo
 }
 
-module.exports = { ensureDefaultRoles };
+module.exports = { getOrCreateUserRole };

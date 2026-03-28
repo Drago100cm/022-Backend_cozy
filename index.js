@@ -2,13 +2,13 @@
 const variable= require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
-
 const conection= require("./database/conection");
 conection();
 
 const RentaRoutes = require('./routes/renta.routes');
 const RoomsRoutes = require('./routes/room.routes');
 const usuarioRoutes = require('./routes/usuario.routes');
+const commentRoutes = require('./routes/comment.routes');
 
 const roles = require('./routes/rol.routes');
 const permiso= require('./routes/permisos.routes');
@@ -37,7 +37,7 @@ app.use('/api/usuarios', usuarioRoutes);
 
 app.use('/api/roles', roles);
 app.use('/api/permiso', permiso);
-
+app.use('/api/comments', commentRoutes);
 // ---- Docs ----
 // OpenAPI JSON generado desde JSDoc
 app.get('/openapi.json', (_, res) => res.json(openapi));

@@ -1,13 +1,14 @@
 const UsuarioDB = require("../models/usuario.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const RolDB = require("../models/role.model");
 const { getOrCreateUserRole } = require("../utils/rolDefault");
 const JWT_SECRET = process.env.JWT_SECRET || "secret_local";
 
 // Registrar un nuevo usuario
 const registrar = async (req, res) => {
     try {
-        const { nombre, usuario, password, rol, roles, type_User, telefono } = req.body;
+        const { nombre, usuario, password, rol, roles, type_user, telefono  } = req.body;
 
         // Verificar campos obligatorios
         if (!nombre || !usuario || !password) {
@@ -31,9 +32,10 @@ const registrar = async (req, res) => {
         // 🔹 Obtener roles reales
         const rolUser = await RolDB.findOne({ nombre: "USER" });
         const rolAdmin = await RolDB.findOne({ nombre: "ADMIN" });
+        const rolLessor = await RolDB.findOne({ nombre: "LESSOR" });
 
-        // 🔹 Elegir rol según type_User
-        const rolSeleccionado = type_User === true ? rolUser : rolAdmin;
+        // 🔹 Elegir rol según type_user
+        const rolSeleccionado = type_user === true ? rolUser : rolAdmin;
 
         // Encriptar la contraseña
         const salt = bcrypt.genSaltSync(10);
@@ -84,8 +86,7 @@ const registrar = async (req, res) => {
 //         }
 
 //         const rolDefecto = await getOrCreateUserRole();
-//         const rolUser = await RolDB.findOne({ nombre: "USER" });
-//         const rolAdmin = await RolDB.findOne({ nombre: "ADMIN" });
+//
 
 //         const salt = bcrypt.genSaltSync(10);
 //         const passwordEncriptada = bcrypt.hashSync(password, salt);
