@@ -37,7 +37,7 @@ app.use('/api/usuarios', usuarioRoutes);
 
 app.use('/api/roles', roles);
 app.use('/api/permiso', permiso);
-app.use('/api/comment', require('./routes/comment.routes'));// ---- Docs ----
+app.use('/api/comment', commentRoutes);// ---- Docs ----
 // OpenAPI JSON generado desde JSDoc
 app.get('/openapi.json', (_, res) => res.json(openapi));
 
