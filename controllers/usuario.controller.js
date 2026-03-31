@@ -35,7 +35,7 @@ const registrar = async (req, res) => {
         const rolLessor = await RolDB.findOne({ nombre: "LESSOR" });
 
         // 🔹 Elegir rol según type_user
-        const rolSeleccionado = type_user === true ? rolUser : rolAdmin;
+        const rolSeleccionado = type_user === true ? rolUser : rolLessor;
 
         // Encriptar la contraseña
         const salt = bcrypt.genSaltSync(10);
