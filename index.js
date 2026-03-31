@@ -1,4 +1,3 @@
-// index.js
 const variable= require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
@@ -24,6 +23,13 @@ const swaggerDocument = require('./swagger.json');
 const app = express();
 const PORT = 3000;
 
+// ← NUEVAS
+const solicitudRoutes = require('./routes/solicitudDeRenta.routes');
+const pagoRoutes = require('./routes/pago.routes');
+
+const productRoutes = require('./routes/product.routes');
+const providerRoutes = require('./routes/provider.routes');
+
 // CORS y body parsers
 app.use(cors());
 app.use(express.json());
@@ -31,27 +37,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Rutas de tu API
-app.use('/api/Rentas', RentaRoutes);
-app.use('/api/Room', RoomsRoutes);
+app.use('/api/rentas', RentaRoutes);
+app.use('/api/room', RoomsRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 
 app.use('/api/roles', roles);
 app.use('/api/permiso', permiso);
-app.use('/api/comment', require('./routes/comment.routes'));// ---- Docs ----
-// OpenAPI JSON generado desde JSDoc
+app.use('/api/comment', require('./routes/comment.routes'));
+
+app.use('/api/solicitudes', solicitudRoutes);
+app.use('/api/pagos', pagoRoutes);
+
+app.use('/api/productos', productRoutes);
+app.use('/api/proveedor', providerRoutes);
+
+// ---- Docs ----
 app.get('/openapi.json', (_, res) => res.json(openapi));
 
-// UI interactiva de Scalar con “Try it”
 app.use('/api-explorer', apiReference({
-  // Puedes apuntar a la misma ruta interna
-  // o a una URL pública si lo hospedas fuera
   url: '/openapi.json',
-  // Opcional: theme: 'purple' | 'alternate' | 'moon' | 'solarized'
-  // theme: 'purple',
 }));
+
+// 404 para rutas no encontradas
+app.use((req, res) => {
+  console.log(`Ruta no encontrada: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ status: 'error', message: 'Ruta no encontrada' });
+});
 
 // Server
 app.listen(PORT, () => {
   console.log(`The server is running on http://localhost:${PORT}`);
-  // console.log(`Scalar UI: http://localhost:${PORT}/api-explorer`);
 });

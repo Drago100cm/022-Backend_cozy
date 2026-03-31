@@ -2,8 +2,8 @@
 const PermisoDB = require("../models/permisos.model");
 
 // Opcional: define aquí los valores válidos (debes alinearlos con tu schema)
-const RECURSOS_VALIDOS = ['ROOM','RENT', 'USER', 'ROL', 'PERMISOS'];
-const ACCIONES_VALIDAS = ['CREATE', 'UPDATE', 'DELETE', 'LIST'];
+const RECURSOS_VALIDOS = ['RENT', 'ROOM', 'USER', 'ROL', 'PERMISOS', 'PAGO', 'SOLICITUD', 'COMMENT', 'PRODUCTO', 'PROVEEDOR'];
+const ACCIONES_VALIDAS = ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LIST'];
 
 // Registrar / crear un nuevo permiso
 const guardar = async (req, res) => {

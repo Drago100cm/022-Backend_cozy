@@ -50,7 +50,7 @@ router.post('/guardarRegistro', auth, requirePermission("RENT_CREATE"),  RentaCo
  *               type: array
  *               items: { $ref: '#/components/schemas/Renta' }
  */
-router.get('/listar', auth, requirePermission("RENT_LIST"), RentaController.listarTodos);
+router.get('/listar', auth, RentaController.listarTodos);
 
 /**
  * @openapi

@@ -14,6 +14,18 @@ const PERMISOS_DEFAULT = [
   { nombre: 'RENT_UPDATE', recurso: 'RENT', accion: 'UPDATE', descripcion: 'Actualizar rentas' },
   { nombre: 'RENT_DELETE', recurso: 'RENT', accion: 'DELETE', descripcion: 'Eliminar rentas' },
 
+  // ---- SOLICITUD ----
+  { nombre: 'SOLICITUD_LIST',   recurso: 'SOLICITUD', accion: 'LIST',   descripcion: 'Listar solicitudes' },
+  { nombre: 'SOLICITUD_CREATE', recurso: 'SOLICITUD', accion: 'CREATE', descripcion: 'Crear solicitudes' },
+  { nombre: 'SOLICITUD_UPDATE', recurso: 'SOLICITUD', accion: 'UPDATE', descripcion: 'Actualizar solicitudes' },
+  { nombre: 'SOLICITUD_DELETE', recurso: 'SOLICITUD', accion: 'DELETE', descripcion: 'Eliminar solicitudes' },
+
+  // ---- PAGO ----
+  { nombre: 'PAGO_LIST',   recurso: 'PAGO', accion: 'LIST',   descripcion: 'Listar pagos' },
+  { nombre: 'PAGO_CREATE', recurso: 'PAGO', accion: 'CREATE', descripcion: 'Crear pagos' },
+  { nombre: 'PAGO_UPDATE', recurso: 'PAGO', accion: 'UPDATE', descripcion: 'Actualizar pagos' },
+  { nombre: 'PAGO_DELETE', recurso: 'PAGO', accion: 'DELETE', descripcion: 'Eliminar pagos' },
+
   // ---- USER ----
   { nombre: 'USER_LIST',   recurso: 'USER', accion: 'LIST',   descripcion: 'Listar usuarios' },
   { nombre: 'USER_CREATE', recurso: 'USER', accion: 'CREATE', descripcion: 'Crear usuarios' },
@@ -31,6 +43,18 @@ const PERMISOS_DEFAULT = [
   { nombre: 'PERMISOS_CREATE', recurso: 'PERMISOS', accion: 'CREATE', descripcion: 'Crear permisos' },
   { nombre: 'PERMISOS_UPDATE', recurso: 'PERMISOS', accion: 'UPDATE', descripcion: 'Actualizar permisos' },
   { nombre: 'PERMISOS_DELETE', recurso: 'PERMISOS', accion: 'DELETE', descripcion: 'Eliminar permisos' },
+
+  // ---- PRODUCT ----
+  { nombre: 'PRODUCT_LIST',   recurso: 'PRODUCT', accion: 'LIST',   descripcion: 'Listar productos' },
+  { nombre: 'PRODUCT_CREATE', recurso: 'PRODUCT', accion: 'CREATE', descripcion: 'Crear productos' },
+  { nombre: 'PRODUCT_UPDATE', recurso: 'PRODUCT', accion: 'UPDATE', descripcion: 'Actualizar productos' },
+  { nombre: 'PRODUCT_DELETE', recurso: 'PRODUCT', accion: 'DELETE', descripcion: 'Eliminar productos' },
+
+  // ---- PROVIDER ----
+  { nombre: 'PROVIDER_LIST',   recurso: 'PROVIDER', accion: 'LIST',   descripcion: 'Listar proveedores' },
+  { nombre: 'PROVIDER_CREATE', recurso: 'PROVIDER', accion: 'CREATE', descripcion: 'Crear proveedores' },
+  { nombre: 'PROVIDER_UPDATE', recurso: 'PROVIDER', accion: 'UPDATE', descripcion: 'Actualizar proveedores' },
+  { nombre: 'PROVIDER_DELETE', recurso: 'PROVIDER', accion: 'DELETE', descripcion: 'Eliminar proveedores' },
 
 
 
