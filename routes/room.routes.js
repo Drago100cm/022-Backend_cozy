@@ -45,7 +45,7 @@ router.post('/guardarRegistro', auth, requirePermission("ROOM_CREATE"), RoomCont
  *               items: { $ref: '#/components/schemas/Room' }
  */
 router.get('/listar', auth, requirePermission("ROOM_LIST"), RoomController.listarTodos);
-
+router.get('/', auth, requirePermission("ROOM_LIST"), RoomController.listarTodos);
 /**
  * @openapi
  * /api/Room/buscarid/{id}:
@@ -109,5 +109,31 @@ router.delete('/eliminar/:id', auth, requirePermission("ROOM_DELETE"), RoomContr
  *       404: { description: No encontrado }
  */
 router.patch('/actualizar/:id', auth, requirePermission("ROOM_UPDATE"), RoomController.actualizar);
+
+/**
+ * @openapi
+ * /api/Room/publicar/{id}:
+ *   patch:
+ *     tags: [Roomes]
+ *     summary: publica Room por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/Room' }
+ *     responses:
+ *       200:
+ *         description: Actualizado
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Room' }
+ *       404: { description: No encontrado }
+ */
+router.patch('/publicar/:id', auth, requirePermission("ROOM_UPDATE"), RoomController.togglePublicado);
 
 module.exports = router;

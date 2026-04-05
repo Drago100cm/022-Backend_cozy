@@ -6,71 +6,111 @@ const { enviarCorreoRenta } = require("../services/email.service");
 
 
 const guardar = async (req, res) => {
-  try {
-    const { fechainicio, fechafin, cuarto, status } = req.body;
 
-    if (!fechainicio || !fechafin || !cuarto) {
-      return res.status(400).json({
-        status: "error",
-        message: "Faltan campos obligatorios",
-      });
-    }
+    try {
+        const { fechainicio, fechafin, cuarto, status } = req.body;
 
-    // 🔹 Guardar renta
-    const nuevaRenta = new RentaDb({
-      fechainicio,
-      fechafin,
-      usuario: req.user.id,
-      cuarto,
-      status: status || "activa",
-    });
-
-    const rentaGuardada = await nuevaRenta.save();
-
-    // 🔹 Buscar cuarto con propietario
-    const cuartoData = await Room.findById(cuarto).populate("propietario");
-
-    if (!cuartoData) {
-      return res.status(404).json({
-        status: "error",
-        message: "Cuarto no encontrado",
-      });
-    }
-
-    // 🔹 Buscar usuario que solicita
-    const usuarioSolicitante = await Usuario.findById(req.user.id);
-
-    if (!usuarioSolicitante) {
-      return res.status(404).json({
-        status: "error",
-        message: "Usuario no encontrado",
-      });
-    }
-
-    // 🔹 Enviar correo al propietario
-    if (cuartoData.propietario?.usuario) {
-      console.log("Enviando correo a:", cuartoData.propietario.usuario);
-
-      await enviarCorreoRenta(
-        cuartoData.propietario.usuario,
-        {
-          usuario: usuarioSolicitante.nombre,
-          cuarto: cuartoData.titulo,
-          fechainicio,
-          fechafin,
+        if (!cuarto) {
+            return res.status(400).json({
+                status: "error",
+                message: "Faltan campos obligatorios",
+            });
         }
-      );
+
+        // 🔹 Guardar renta
+        const nuevaRenta = new RentaDb({
+            fechainicio,
+            fechafin,
+            usuario: req.user.id,
+            cuarto,
+            status: status || "pendiente",
+        });
+
+        const rentaGuardada = await nuevaRenta.save();
+
+        // 🔹 Buscar cuarto con propietario
+        const cuartoData = await Room.findById(cuarto).populate("propietario");
+
+        if (!cuartoData) {
+            return res.status(404).json({
+                status: "error",
+                message: "Cuarto no encontrado",
+            });
+        }
+
+        // 🔹 Buscar usuario que solicita
+        const usuarioSolicitante = await Usuario.findById(req.user.id);
+
+        if (!usuarioSolicitante) {
+            return res.status(404).json({
+                status: "error",
+                message: "Usuario no encontrado",
+            });
+        }
+
+        // 🔹 Enviar correo al propietario
+        if (cuartoData.propietario?.usuario) {
+            console.log("Enviando correo a:", cuartoData.propietario.usuario);
+
+            await enviarCorreoRenta(
+                cuartoData.propietario.usuario,
+                {
+                    usuario: usuarioSolicitante.nombre,
+                    cuarto: cuartoData.titulo,
+                    fechainicio,
+                    fechafin,
+                }
+            );
+        }
+
+        return res.status(201).json({
+            status: "success",
+            message: "Renta guardada y correo enviado",
+            data: rentaGuardada,
+        });
+
+    } catch (error) {
+        console.error("Error al guardar la renta:", error);
+        console.error("Mensaje:", error.message);
+
+        return res.status(500).json({
+            status: "error",
+            message: "Error en el servidor",
+            error: error.message,
+        });
+    }
+};
+
+const listarTodos = async (req, res) => {
+  try {
+    const { tipo = "todos" } = req.query;
+    const userId = req.user.id;
+
+    let filtro = {};
+
+    if (tipo === "solicitante") {
+      filtro.usuario = userId;
     }
 
-    return res.status(201).json({
+    if (tipo === "propietario") {
+      const misCuartos = await Room.find({ propietario: userId }).select("_id").lean();
+      const cuartosIds = misCuartos.map((cuarto) => cuarto._id);
+
+      filtro.cuarto = { $in: cuartosIds };
+    }
+
+    const rentas = await RentaDb.find(filtro)
+      .populate("usuario")
+      .populate("cuarto")
+      .lean();
+
+    return res.status(200).json({
       status: "success",
-      message: "Renta guardada y correo enviado",
-      data: rentaGuardada,
+      message: "Lista de rentas",
+      data: rentas,
     });
-
   } catch (error) {
-    console.error("Error al guardar la renta:", error);
-
+    console.log("Error al listar rentas: ", error);
     return res.status(500).json({
       status: "error",
       message: "Error en el servidor",
@@ -80,25 +120,23 @@ const guardar = async (req, res) => {
 };
 
 
-
-//Listar todos los registros
-const listarTodos = async (req, res) => {
-    try {
-        const rentas = await RentaDb.find().populate('usuario').populate('cuarto').lean();
-        return res.status(200).json({
-            status: "success",
-            message: "Lista de rentas",
-            data: rentas
-        });
-    } catch (error) {
-        console.log("Error al listar rentas: ", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Error en el servidor",
-            error: error.message
-        });
-    }
-};
+// const listarTodos = async (req, res) => {
+//     try {
+//         const rentas = await RentaDb.find().populate('usuario').populate('cuarto').lean();
+//         return res.status(200).json({
+//             status: "success",
+//             message: "Lista de rentas",
+//             data: rentas
+//         });
+//     } catch (error) {
+//         console.log("Error al listar rentas: ", error);
+//         return res.status(500).json({
+//             status: "error",
+//             message: "Error en el servidor",
+//             error: error.message
+//         });
+//     }
+// };
 
 //Buscar un registro por ID
 const BuscarId = async (req, res) => {

@@ -13,7 +13,7 @@ const PermisoSchema = new Schema(
     recurso: {
       type: String,
       required: true,
-      enum: ['RENT', 'ROOM', 'USER', 'ROL', 'PERMISOS', 'PAGO', 'SOLICITUD', 'COMMENT', 'PRODUCTO', 'PROVEEDOR'], // agrega lo que necesites
+      enum: ['RENT', 'ROOM', 'USER', 'ROLE', 'PERMISSION', 'PAYMENT', 'COMMENT', 'PRODUCT', 'PROVIDER', 'ADMIN'], // agrega lo que necesites
     },
     accion: {
       type: String,

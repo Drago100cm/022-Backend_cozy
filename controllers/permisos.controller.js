@@ -2,7 +2,7 @@
 const PermisoDB = require("../models/permisos.model");
 
 // Opcional: define aquí los valores válidos (debes alinearlos con tu schema)
-const RECURSOS_VALIDOS = ['RENT', 'ROOM', 'USER', 'ROL', 'PERMISOS', 'PAGO', 'SOLICITUD', 'COMMENT', 'PRODUCTO', 'PROVEEDOR'];
+const RECURSOS_VALIDOS = ['RENT', 'ROOM', 'USER', 'ROLE', 'PERMISSION', 'PAYMENT', 'COMMENT', 'PRODUCT', 'PROVIDER', 'ADMIN']; // agrega lo que necesites
 const ACCIONES_VALIDAS = ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LIST'];
 
 // Registrar / crear un nuevo permiso

@@ -50,22 +50,36 @@ const guardar = async (req, res) => {
 }
 
 //Listar todos los registros
+// Listar todos los registros
 const listarTodos = async (req, res) => {
-    try {
-        const rooms = await RoomDb.find().populate('propietario').lean();
-        return res.status(200).json({
-            status: "success",
-            message: "Lista de cuartos",
-            data: rooms
-        });
-    } catch (error) {
-        console.log("Error al listar cuartos: ", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Error en el servidor",
-            error: error.message
-        });
+  try {
+    const filters = {};
+
+    if (req.query.publicado !== undefined) {
+      filters.publicado = req.query.publicado === "true";
     }
+
+    if (req.query.propietario) {
+      filters.propietario = req.query.propietario;
+    }
+
+    const rooms = await RoomDb.find(filters)
+      .populate("propietario")
+      .lean();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Lista de cuartos",
+      data: rooms,
+    });
+  } catch (error) {
+    console.log("Error al listar cuartos: ", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message,
+    });
+  }
 };
 
 //Buscar un registro por ID
@@ -190,10 +204,51 @@ const actualizar = async (req, res) => {
     }
 };
 
+const togglePublicado = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { publicado } = req.body;
+
+    if (typeof publicado !== 'boolean') {
+      return res.status(400).json({
+        ok: false,
+        message: 'El campo publicado debe ser booleano',
+      });
+    }
+
+    const roomUpdated = await RoomDb.findByIdAndUpdate(
+      id,
+      { publicado },
+      { new: true, runValidators: true }
+    ).populate('propietario', 'nombre usuario email');
+
+    if (!roomUpdated) {
+      return res.status(404).json({
+        ok: false,
+        message: 'Cuarto no encontrado',
+      });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      message: `Propiedad ${publicado ? 'publicada' : 'ocultada'} correctamente`,
+      data: roomUpdated,
+    });
+  } catch (error) {
+    console.error('Error al cambiar publicado:', error);
+    return res.status(500).json({
+      ok: false,
+      message: 'Error al actualizar el estado de publicación',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
     guardar,
     listarTodos,
     BuscarId,
     eliminar,
-    actualizar
+    actualizar,
+    togglePublicado
 }

@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret_local";
 // Registrar un nuevo usuario
 const registrar = async (req, res) => {
     try {
-        const { nombre, usuario, password, rol, roles, type_user, telefono  } = req.body;
+        const { nombre, usuario, password, rol, roles, type_user, telefono,estado  } = req.body;
 
         // Verificar campos obligatorios
         if (!nombre || !usuario || !password) {
@@ -35,13 +35,14 @@ const registrar = async (req, res) => {
         const rolLessor = await RolDB.findOne({ nombre: "LESSOR" });
 
         // 🔹 Elegir rol según type_user
-        const rolSeleccionado = type_user === true ? rolUser : rolLessor;
+        const rolSeleccionado = type_user === true ? rolUser  :  rolLessor;
 
         // Encriptar la contraseña
         const salt = bcrypt.genSaltSync(10);
         const passwordEncriptada = bcrypt.hashSync(password, salt);
 
         const nuevoUsuario = new UsuarioDB({
+            estado ,
             nombre,
             usuario,
             telefono,
