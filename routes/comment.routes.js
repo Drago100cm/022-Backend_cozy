@@ -18,7 +18,7 @@ const auth = require('../middleware/auth');
  *     tags: [Comments]
  *     summary: Crear un comentario
  */
-router.post('/guardarRegistro', CommentController.guardar);
+router.post('/guardarRegistro',auth, CommentController.guardar);
 
 /**
  * @openapi

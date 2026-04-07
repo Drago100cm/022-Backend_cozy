@@ -2,41 +2,41 @@ const CommentDb = require("../models/comment.model");
 
 // Guardar un nuevo registro
 const guardar = async (req, res) => {
-    try {
-        const { roomId, userId, texto, calificacion, estado } = req.body;
+  try {
+    const { roomId, texto, calificacion, estado } = req.body;
+    const userId = req.user.id;
 
-        // Validar campos obligatorios
-        if (!roomId || !userId || !texto) {
-            return res.status(400).json({
-                status: "error",
-                message: "Faltan campos obligatorios",
-            });
-        }
-
-        const nuevoComentario = new CommentDb({
-            roomId,
-            userId,
-            texto,
-            calificacion,
-            estado
-        });
-
-        const comentarioGuardado = await nuevoComentario.save();
-
-        return res.status(201).json({
-            status: "success",
-            message: "Comentario guardado exitosamente",
-            data: comentarioGuardado
-        });
-
-    } catch (error) {
-        console.log("Error al guardar el comentario: ", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Error en el servidor",
-            error: error.message
-        });
+    if (!roomId || !texto) {
+      return res.status(400).json({
+        status: "error",
+        message: "Faltan campos obligatorios",
+      });
     }
+
+    const nuevoComentario = new CommentDb({
+      roomId,
+      userId,
+      texto,
+      calificacion,
+      estado
+    });
+
+    const comentarioGuardado = await nuevoComentario.save();
+
+    return res.status(201).json({
+      status: "success",
+      message: "Comentario guardado exitosamente",
+      data: comentarioGuardado
+    });
+
+  } catch (error) {
+    console.log("Error al guardar el comentario: ", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message
+    });
+  }
 };
 
 // Listar todos los registros
