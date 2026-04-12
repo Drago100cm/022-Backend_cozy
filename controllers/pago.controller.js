@@ -6,41 +6,99 @@ const mongoose = require('mongoose');
 const { enviarCorreoPago } = require('../services/email.service');
 
 const guardar = async (req, res) => {
-    try {
-        const { renta, monto, periodoPago, notas, comprobante } = req.body;
+  try {
+    const { renta, monto, periodoPago, notas, comprobante } = req.body;
 
-        if (!renta || !monto || !periodoPago) {
-            return res.status(400).json({ status: 'error', message: 'Faltan campos obligatorios' });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(renta)) {
-            return res.status(400).json({ status: 'error', message: 'El ID de renta no es válido' });
-        }
-
-        const rentaData = await Renta.findById(renta);
-        if (!rentaData) {
-            return res.status(404).json({ status: 'error', message: 'Renta no encontrada' });
-        }
-
-        const nuevoPago = new Pago({
-            renta,
-            inquilino: req.user.id,
-            monto,
-            periodoPago,
-            notas: notas || '',
-            comprobante: comprobante || '',
-            estado: 'pendiente'
-        });
-
-        const guardado = await nuevoPago.save();
-
-        return res.status(201).json({ status: 'success', message: 'Pago registrado correctamente', data: guardado });
-    } catch (error) {
-        console.error('Error al guardar pago:', error);
-        return res.status(500).json({ status: 'error', message: 'Error en el servidor', error: error.message });
+    if (!renta || !monto || !periodoPago) {
+      return res.status(400).json({
+        status: "error",
+        message: "Faltan campos obligatorios",
+      });
     }
-};
 
+    if (!mongoose.Types.ObjectId.isValid(renta)) {
+      return res.status(400).json({
+        status: "error",
+        message: "El ID de renta no es válido",
+      });
+    }
+
+    const montoNumber = Number(monto);
+    if (isNaN(montoNumber) || montoNumber <= 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "El monto debe ser un número válido mayor a 0",
+      });
+    }
+
+    // Si en tu flujo actual estás usando el ID del cuarto:
+    const rentaData = await Room.findById(renta);
+
+    // Si luego lo corriges para usar renta real, cambia esa línea por:
+    // const rentaData = await Renta.findById(renta);
+
+    if (!rentaData) {
+      return res.status(404).json({
+        status: "error",
+        message: "Renta no encontrada",
+      });
+    }
+
+    // Validar base64 si viene comprobante
+    if (comprobante) {
+      const esBase64Imagen = /^data:image\/(png|jpg|jpeg|webp);base64,/.test(comprobante);
+
+      if (!esBase64Imagen) {
+        return res.status(400).json({
+          status: "error",
+          message: "El comprobante debe ser una imagen válida en base64",
+        });
+      }
+
+      // límite aproximado para evitar imágenes muy pesadas
+      if (comprobante.length > 3000000) {
+        return res.status(400).json({
+          status: "error",
+          message: "La imagen del comprobante es demasiado grande",
+        });
+      }
+    }
+
+    const pagoExistente = await Pago.findOne({ renta, periodoPago });
+    if (pagoExistente) {
+      return res.status(400).json({
+        status: "error",
+        message: "Ya existe un pago registrado para este periodo",
+      });
+    }
+
+    const nuevoPago = new Pago({
+      renta,
+      inquilino: req.user.id,
+      monto: montoNumber,
+      periodoPago,
+      notas: notas || "",
+      comprobante: comprobante || "",
+      estado: "pendiente",
+      fechaPago: new Date(),
+    });
+
+    const guardado = await nuevoPago.save();
+
+    return res.status(201).json({
+      status: "success",
+      message: "Pago registrado correctamente",
+      data: guardado,
+    });
+  } catch (error) {
+    console.error("Error al guardar pago:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message,
+    });
+  }
+};
 const listarTodos = async (req, res) => {
     try {
         const pagos = await Pago.find()

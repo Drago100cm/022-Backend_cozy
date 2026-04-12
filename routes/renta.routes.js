@@ -115,5 +115,5 @@ router.delete('/eliminar/:id', auth, requirePermission("RENT_DELETE"),  RentaCon
  *       404: { description: No encontrado }
  */
 router.patch('/actualizar/:id', auth, requirePermission("RENT_UPDATE"),  RentaController.actualizar);
-
+router.get("/mi-renta/cuarto/:cuartoId", auth, RentaController.getMiRentaPorCuarto);
 module.exports = router;

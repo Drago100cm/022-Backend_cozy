@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const PagoSchema = new Schema({
-    renta:     { type: Schema.Types.ObjectId, ref: 'Renta', required: true },
+    renta:     { type: Schema.Types.ObjectId, ref: 'Room', required: true },
     inquilino: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
     monto:     { type: Number, required: true, min: 0 },
     periodoPago: { type: String, required: true }, // ej: "2025-03"

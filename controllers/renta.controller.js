@@ -260,11 +260,57 @@ const actualizar = async (req, res) => {
     }
 };
 
+const mongoose = require("mongoose");
+
+const getMiRentaPorCuarto = async (req, res) => {
+  try {
+    const { cuartoId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cuartoId)) {
+      return res.status(400).json({
+        status: "error",
+        message: "El ID del cuarto no es válido",
+      });
+    }
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        status: "error",
+        message: "Usuario no autenticado",
+      });
+    }
+
+    const usuarioId = req.user.id;
+
+    const renta = await RentaDb.findOne({
+      cuarto: cuartoId,
+      usuario: usuarioId,
+      status: "aprobada",
+    })
+      .populate("cuarto")
+      .populate("usuario");
+
+    return res.status(200).json({
+      status: "success",
+      data: renta || null,
+    });
+
+  } catch (error) {
+    console.error("🔥 Error obteniendo renta:", error);
+
+    return res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
     guardar,
     listarTodos,
     BuscarId,
     eliminar,
-    actualizar
+    actualizar,
+    getMiRentaPorCuarto
 }
