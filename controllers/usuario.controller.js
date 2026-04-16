@@ -259,48 +259,66 @@ const BuscarId = async (req, res) => {
 
 // Actualizar usuario
 const actualizar = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const { nombre, usuario, password, roles } = req.body;
+  try {
+    const id = req.params.id;
 
-        const datosActualizar = {};
+    const {
+      nombre,
+      usuario,
+      password,
+      telefono,
+      whatsapp,
+      ciudad,
+      descripcion,
+    } = req.body;
 
-        if (nombre) datosActualizar.nombre = nombre;
-        if (usuario) datosActualizar.usuario = usuario;
-        if (roles) datosActualizar.roles = roles;
+    const datosActualizar = {};
 
-        // Si va a actualizar contraseña, encriptar
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            datosActualizar.password = await bcrypt.hash(password, salt);
-        }
+    if (nombre) datosActualizar.nombre = nombre;
+    if (usuario) datosActualizar.usuario = usuario;
+    if (telefono) datosActualizar.telefono = telefono;
+    if (whatsapp) datosActualizar.whatsapp = whatsapp;
+    if (ciudad) datosActualizar.ciudad = ciudad;
+    if (descripcion) datosActualizar.descripcion = descripcion;
 
-        const actualizado = await UsuarioDB.findByIdAndUpdate(id, datosActualizar, {
-            new: true,
-            runValidators: true
-        }).select("-password");
-
-        if (!actualizado) {
-            return res.status(404).json({
-                status: "error",
-                message: "Usuario no encontrado"
-            });
-        }
-
-        return res.status(200).json({
-            status: "success",
-            message: "Usuario actualizado correctamente",
-            data: actualizado
-        });
-
-    } catch (error) {
-        console.log("Error al actualizar usuario:", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Error en el servidor",
-            error: error.message
-        });
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      datosActualizar.password = await bcrypt.hash(password, salt);
     }
+
+    // 🔥 IMPORTANTE: NO TOCAR ROLES AQUÍ (evita bug admin/user)
+    // ❌ elimina cualquier update de roles desde frontend
+
+    const actualizado = await UsuarioDB.findByIdAndUpdate(
+      id,
+      datosActualizar,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("-password");
+
+    if (!actualizado) {
+      return res.status(404).json({
+        status: "error",
+        message: "Usuario no encontrado",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Perfil actualizado correctamente",
+      data: actualizado,
+    });
+
+  } catch (error) {
+    console.log("Error al actualizar usuario:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message,
+    });
+  }
 };
 
 // eliminar un usuario por ID
