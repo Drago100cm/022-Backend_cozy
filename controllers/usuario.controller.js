@@ -270,6 +270,7 @@ const actualizar = async (req, res) => {
       whatsapp,
       ciudad,
       descripcion,
+      roles,
     } = req.body;
 
     const datosActualizar = {};
@@ -280,6 +281,7 @@ const actualizar = async (req, res) => {
     if (whatsapp) datosActualizar.whatsapp = whatsapp;
     if (ciudad) datosActualizar.ciudad = ciudad;
     if (descripcion) datosActualizar.descripcion = descripcion;
+    if (roles) datosActualizar.roles = roles;
 
     if (password) {
       const salt = await bcrypt.genSalt(10);
