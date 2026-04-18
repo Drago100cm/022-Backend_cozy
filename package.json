@@ -65,6 +65,7 @@
     "is-promise": "^4.0.0",
     "json5": "^2.2.3",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^4.2.1",
     "kareem": "^2.6.3",
     "math-intrinsics": "^1.1.0",
     "media-typer": "^1.1.0",
